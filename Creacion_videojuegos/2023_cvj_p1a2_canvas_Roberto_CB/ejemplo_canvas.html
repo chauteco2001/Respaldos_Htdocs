@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="index.html">Regresar</a>
+    <div class="course">
+        <canvas id="miCanvas" width="400" height="400">
+
+        </canvas>
+        <canvas id="miCanvas">
+        </canvas>
+    <script>
+        // Obtén el elemento canvas y su contexto
+        const canvas = document.getElementById('miCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Establece el tamaño del canvas para que cubra toda la pantalla
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Dibuja la primera línea de la "X"
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.strokeStyle = 'blue'; // Color de la línea
+        ctx.lineWidth = 5; // Ancho de la línea
+        ctx.stroke();
+
+        // Dibuja la segunda línea de la "X"
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        ctx.lineTo(canvas.width, 0);
+        ctx.stroke();
+    </script>
+    
+    </div> 
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+    <title>Gestión de Calificaciones por Estudiantes</title>
+    <%- include('../partials/styles'); %>
+</head>
+<body>
+<%- include('../partials/nav-bar'); %>
+
+
+<div id="layoutSidenav">
+    <%- include('../partials/side-nav'); %>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+                <div class="card m-4">
+                    <div class="card-header">
+                        <h3 class="h3">
+                            Gestión de Calificaciones por Estudiantes
+                        </h3>
+                    </div>
+                    <div class="card-body">
+
+                        <form action="/Calificaciones/Estudiantes" method="post">
+                            <div class="row m-3">
+                                <div class="col-md-4">
+                                    <label>Seleccionar cuatrimestre</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select name="cuatrimestre" id="cuatrimestre_select" class="form-select">
+                                        <option value="1" <%=  (cuatrimestre == 1) ? 'selected' : ''%>>1</option>
+                                        <option value="2" <%=  (cuatrimestre == 2) ? 'selected' : ''%>>2</option>
+                                        <option value="3" <%=  (cuatrimestre == 3) ? 'selected' : ''%>>3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row m-3">
+                                <div class="col-md-4">
+                                    <label>Seleccionar Materia</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select name="materia" id="materias_select" class="form-select">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row m-3">
+                                <div class="col-md-4">
+                                    <label>Seleccionar Parcial</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select name="parcial" id="parcial_select" class="form-select">
+
+                                        <option value="1">Parcial 1</option>
+                                        <option value="2" >Parcial 2</option>
+                                        <option value="3" >Parcial 3</option>
+                                        <option value="4" >Extraordinario</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row m-3">
+                                <div class="table-responsive-md ">
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-dark text-center">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Matricula</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido Paterno</th>
+                                            <th>Apellido Materno</th>
+                                            <th>Calificación</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody class="table-light text-center">
+
+                                        <% if (alumnos) { %>
+                                            <% for (let i = 0; i < alumnos.length; i++) { %>
+                                                <% alumno = alumnos[i] %>
+                                                <tr>
+                                                    <td><%= alumno.id %></td>
+
+                                                    <td><%= alumno.matricula %></td>
+                                                    <td><%= alumno.nombre %></td>
+                                                    <td><%= alumno.apellido_paterno %></td>
+                                                    <td><%= alumno.apellido_materno %></td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <input type="hidden" name="alumno[]" value="<%=alumno.id%>">
+                                                                <input min="0" type="number" name="calificacion[]" class="form-control" placeholder="ejemplo: 100,99,86" required>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row m-3 text-center">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-save"></i>
+                                        Guardar
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a  class="btn btn-danger" href="/">
+                                        <i class="fa fa-undo"></i>
+                                        Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </main>
+
+        <%- include('../partials/footer'); %>
+    </div>
+</div>
+
+
+<%- include('../partials/scripts'); %>
+
+<script>
+
+    function rellenarSelectMaterias(opciones) {
+        const $select = $('#materias_select'); // Obtén el elemento select por su ID
+        $select.empty();
+        // Recorre el array de opciones y agrega cada una al select
+        opciones.forEach(opcion => {
+            const $option = $('<option>', {
+                value: opcion.value,
+                text: opcion.text
+            });
+            $select.append($option);
+        });
+    }
+    function buscarMaterias(cuatrimestre) {
+        $.post('/Materias/ByCuatrimestres', {
+                cuatrimestre
+            },
+            function (resp) {
+                const opciones  = resp.data.map(function(materia) {
+                    return {
+                        value: materia.id,
+                        text: materia.clave_materia + ' - ' + materia.nombre
+                    };
+                });
+                console.log(opciones)
+                rellenarSelectMaterias(opciones);
+            },
+            'json'
+        );
+    }
+
+    $(document).ready(function() {
+
+
+        $('#cuatrimestre_select').change(function () {
+            const cuatrimestre  =   +$('#cuatrimestre_select').val();
+
+          buscarMaterias(cuatrimestre);
+        });
+
+        buscarMaterias(1);
+    });
+</script>
+</body>
+</html>

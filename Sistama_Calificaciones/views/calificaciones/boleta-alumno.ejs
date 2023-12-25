@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+    <title>Gestión de Calificaciones por Estudiantes</title>
+    <%- include('../partials/styles'); %>
+</head>
+<body>
+<%- include('../partials/nav-bar'); %>
+
+
+<div id="layoutSidenav">
+    <%- include('../partials/side-nav'); %>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+                <div class="card m-4">
+                    <div class="card-header">
+                        <h3 class="h3">
+                            Consultar boleta por Estudiante
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row m-3">
+                            <div class="col-md-3">
+                                <label><font color="red">*</font>Matrícula Alumno:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="matricula" id="matricula" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+
+                            </div>
+                        </div>
+
+                        <div class="row m-3">
+                            <div class="col-md-3">
+                                <label><font color="red">*</font>Cuatrimestre:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <select name="cuatrimestre" id="cuatrimestre_select" class="form-select">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_search">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Agrega este div en el cuerpo de tu ejs -->
+        <div id="boletaModal" class="modal fade" tabindex="-1" aria-labelledby="boletaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="boletaModalLabel">Boleta de Alumno</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="alumnoInfo"></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Clave Materia</th>
+                                <th>Nombre Materia</th>
+                                <th>Parcial1</th>
+                                <th>Parcial2</th>
+                                <th>Parcial3</th>
+                                <th>Extraordinario</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tablaBoleta">
+                            <!-- Aquí se agregarán las filas de la tabla dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <%- include('../partials/footer'); %>
+    </div>
+</div>
+
+
+<%- include('../partials/scripts'); %>
+
+<!-- Agrega este script al final del archivo ejs -->
+<script>
+    $(document).ready(function() {
+        $("#btn_search").click(function() {
+            const matricula = $("#matricula").val();
+            const cuatrimestre = $("#cuatrimestre_select").val();
+
+            $.get(`/Calificaciones/Consultar/Estudiantes/${matricula}/${cuatrimestre}`, function(data) {
+                $("#tablaBoleta").empty();
+                if (!data.calificaciones.length) {
+                    Swal.fire("No se encontró la matrícula o cuatrimestre especificado");
+                } else {
+                    $("#alumnoInfo").text(`Alumno: ${data.alumno.nombre} ${data.alumno.apellido_paterno} ${data.alumno.apellido_materno}`);
+
+                    data.calificaciones.forEach(function(row) {
+                        const tr = $("<tr>");
+                        tr.append($("<td>").text(row.clave_materia));
+                        tr.append($("<td>").text(row.nombre));
+                        tr.append($("<td>").text(row.parcial1));
+                        tr.append($("<td>").text(row.parcial2));
+                        tr.append($("<td>").text(row.parcial3));
+                        tr.append($("<td>").text(row.extraordinario));
+                        $("#tablaBoleta").append(tr);
+                    });
+
+                    // Mostrar el modal
+                    $("#boletaModal").modal("show");
+                }
+            },
+            );
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Animación en Canvas</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <a href="index.html">Regresar</a>
+    <canvas id="miCanvas" width="400" height="200"></canvas>
+
+    <script>
+        var canvas = document.getElementById('miCanvas');
+        var ctx = canvas.getContext('2d');
+
+        var x = 0; // Posición inicial en X
+        var velocidad = 2; // Velocidad de movimiento
+
+        function animar() {
+            // Borra el contenido anterior
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibuja un círculo en la nueva posición
+            ctx.beginPath();
+            ctx.arc(x, 100, 20, 0, 2 * Math.PI);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+
+            // Actualiza la posición en X para la próxima animación
+            x += velocidad;
+
+            // Si llega al borde derecho, reinicia en el borde izquierdo
+            if (x > canvas.width) {
+                x = 0;
+            }
+
+            // Repite la animación
+            requestAnimationFrame(animar);
+        }
+
+        // Inicia la animación
+        animar();
+    </script>
+</body>
+</html>

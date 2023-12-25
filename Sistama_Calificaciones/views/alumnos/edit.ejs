@@ -1,0 +1,118 @@
+<% function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+} %>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+    <title>Gestión de Alumnos</title>
+    <%- include('../partials/styles'); %>
+</head>
+<body>
+<%- include('../partials/nav-bar'); %>
+
+
+<div id="layoutSidenav">
+    <%- include('../partials/side-nav'); %>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <div class="card m-4">
+                    <div class="card-header">
+                        <h3 class="h3">
+                            Actualizacion de Alumno con id: <%= alumno.id%>
+                        </h3>
+                    </div>
+                    <div class="card-body">
+
+                        <form action="/Alumnos/Update/<%= alumno.id%>" method="post">
+
+                            <input type="hidden" name="id_domicilio" value="<%= domicilio.id%>">
+
+                            <div class="row mt-4">
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Matrícula:</label>
+                                    <input value="<%= alumno.matricula %>" name="matricula" type="text" class="form-control" placeholder="" required>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Nombre:</label>
+                                    <input value="<%= alumno.nombre %>" name="nombre" type="text" class="form-control" placeholder="" required>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Apellido Paterno:</label>
+                                    <input value="<%= alumno.apellido_paterno %>" name="apellido_paterno" type="text" class="form-control" placeholder="" required>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Apellido Materno:</label>
+                                    <input value="<%= alumno.apellido_materno %>" name="apellido_materno" type="text" class="form-control" placeholder="" required>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Genero:</label>
+                                    <select name="genero" class="form-select">
+                                        <option value="1" <%= alumno.genero === 1 ? 'selected' : '' %>>
+                                            Masculino
+                                        </option>
+                                        <option value="2" <%= alumno.genero === 2 ? 'selected' : '' %>>
+                                            Femenino
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Fecha Nacimiento:</label>
+                                    <input value="<%= formatDate(alumno.fecha_nacimiento) %>" name="fecha_nacimiento" type="date" class="form-control" placeholder="" required>                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Calle:</label>
+                                    <input value="<%= domicilio.calle %>" name="calle" type="text" class="form-control" placeholder="" required>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Colonia:</label>
+                                    <input value="<%= domicilio.colonia %>" name="colonia" type="text" class="form-control" placeholder="" required>
+                                </div>
+
+                                <div class="form-group p-2">
+                                    <label><font color="red">*</font>Número:</label>
+                                    <input value="<%= domicilio.numero %>" name="numero" type="text" class="form-control" placeholder="" required>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-save"></i>
+                                        Guardar
+                                    </button>
+
+                                    <a href="/Alumnos" class="btn btn-danger">
+                                        <i class="fa fa-undo"></i>
+                                        Cancelar
+                                    </a>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <%- include('../partials/footer'); %>
+    </div>
+</div>
+
+
+<%- include('../partials/scripts'); %>
+</body>
+</html>

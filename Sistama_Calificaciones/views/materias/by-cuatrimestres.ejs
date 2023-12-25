@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+    <title>Gestión de Materias</title>
+    <%- include('../partials/styles'); %>
+</head>
+<body>
+<%- include('../partials/nav-bar'); %>
+
+
+<div id="layoutSidenav">
+    <%- include('../partials/side-nav'); %>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+                <div class="card m-4">
+                    <div class="card-header">
+                        <h3 class="h3">
+                            Lectura de Materias Del Cuatrimestre <%= cuatrimestre%>
+                        </h3>
+                    </div>
+                    <div class="card-body">
+
+
+                        <% if (newRegister && data){ %>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-success" role="alert">
+                                        Se ha creado una nueva Materia con id: <%= data.id %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <% if (updateRegister && data){ %>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-info" role="alert">
+                                        Se ha actualizado la Materia con id: <%= data.id %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+
+                            <div class="row m-3">
+                                <div class="col-md-2">
+                                    <label>Seleccionar cuatrimestre</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select name="cuatrimestre" id="cuatrimestre" class="form-select">
+                                        <option value="1" <%=  (cuatrimestre == 1) ? 'selected' : ''%>>1</option>
+                                        <option value="2" <%=  (cuatrimestre == 2) ? 'selected' : ''%>>2</option>
+                                        <option value="3" <%=  (cuatrimestre == 3) ? 'selected' : ''%>>3</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-sm btn-outline-secondary" id="btn_search">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        <div class="table-responsive-md ">
+                            <table class="table table-striped table-bordered">
+                                <thead class="table-dark text-center">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Matricula</th>
+                                    <th>Nombre</th>
+                                    <th>Cuatrimestre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+
+                                <tbody class="table-light text-center">
+
+                                <% if (materias) { %>
+                                    <% for (let i = 0; i < materias.length; i++) { %>
+                                        <% materia = materias[i] %>
+                                        <tr>
+                                            <td><%= materia.id %></td>
+
+                                            <td><%= materia.clave_materia %></td>
+                                            <td><%= materia.nombre %></td>
+                                            <td><%= materia.cuatrimestre %></td>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <a class="btn btn-sm btn-outline-primary"
+                                                           href="/Materias/<%= materia.id %>/Editar"
+                                                        >
+                                                            <i class="fa fa-pencil"></i>
+                                                            Editar
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-12">
+
+                                                        <a class="btn btn-sm btn-outline-danger delete-button"
+                                                           data-id="<%= materia.id%>">
+                                                            <i class="fa fa-trash"></i>
+                                                            Eliminar
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </main>
+
+        <%- include('../partials/footer'); %>
+    </div>
+</div>
+
+
+<%- include('../partials/scripts'); %>
+
+<script>
+    $(document).ready(function() {
+        $('.delete-button').click(function() {
+            const id = $(this).data('id');
+
+            Swal.fire({
+                title: '¿Está seguro que desea eliminar el id: ' + id+'?',
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: `/Alumnos/${id}/Eliminar`,
+                        type: 'DELETE',
+                        success: function(data) {
+                            alert(data.message); // Muestra un mensaje de éxito
+                            location.reload();   // Recarga la página después de la eliminación
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Error al eliminar el registro');
+                        }
+                    });
+                }
+            })
+        });
+
+        $('#btn_search').click(function () {
+            const cuatrimestre  =   +$('#cuatrimestre').val();
+
+            window.location.href    =   '/Materias/' + cuatrimestre + '/Cuatrimestres';
+        });
+    });
+</script>
+</body>
+</html>

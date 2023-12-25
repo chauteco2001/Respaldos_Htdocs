@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <select name="mes" id="mes">
+        <option value="1">Enero</option>
+        <option value="2">Febrero</option>
+        <option value="3">Marzo</option>
+        <option value="4">Abril</option>
+        <option value="5">Mayo</option>
+        <option value="6">Junio</option>
+        <option value="7">Julio</option>
+        <option value="8">Agosto</option>
+        <option value="9">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Nombiembre</option>
+        <option value="12">Diciembre</option>
+    </select>
+    
+    
+        int mes = Integer.parseInt(request.getParameter("mes"));
+    String nombreMes = meses[mes];
+    String tablaMes = "<table border="1">"
+            + "<caption>Tabla del mes de " + nombreMes + "</caption>"
+            + "<tr>"
+            + "<th>Rango Inicial</th>"
+            + "<th>Rango Final</th>"
+            + "<th>Valor A</th>"
+            + "<th>Valor B</th>"
+            + "</tr>";
+    
+    if (mes == 1) {
+        for (int i = 0; i < sat.length; i++) {
+            tablaMes += "<tr>"
+                    + "<td>" + sat[i][0] + "</td>"
+                    + "<td>" + sat[i][1] + "</td>"
+                    + "<td>" + sat[i][2] + "</td>"
+                    + "<td>" + sat[i][3] + "</td>"
+                    + "</tr>";
+        }
+    } else {
+        for (int i = 0; i < sat.length; i++) {
+            tablaMes += "<tr>"
+                    + "<td>" + ((sat[i][0] - 0.01) * mes + 0.01) + "</td>"
+                    + "<td>" + (sat[i][1] * mes) + "</td>"
+                    + "<td>" + (sat[i][2] * mes) + "</td>"
+                    + "<td>" + (sat[i][3] * mes) + "</td>"
+                    + "</tr>";
+        }
+    }
+    
+    tablaMes += "</table>" 
+                + "<br>"
+                + " <div>"
+                + "<h4>Ingreso Bruto</h4>"
+                + " <label >Ingresa el Ingeso </label>"
+                + "<input id="ingreso" type="number">"
+                + "<input onclick="calcular()" type="button" value="Calcular">"
+                + "</div>";
+    
+    out.println(tablaMes);
+    
+
+    </div>
+</body>
+</html>

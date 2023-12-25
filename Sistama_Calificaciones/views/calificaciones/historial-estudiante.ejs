@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+    <title>Gestión de Calificaciones por Estudiantes</title>
+    <%- include('../partials/styles'); %>
+</head>
+<body>
+<%- include('../partials/nav-bar'); %>
+
+
+<div id="layoutSidenav">
+    <%- include('../partials/side-nav'); %>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+                <div class="card m-4">
+                    <div class="card-header">
+                        <h3 class="h3">
+                            Consultar boleta por Estudiante
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row m-3">
+                            <div class="col-md-3">
+                                <label><font color="red">*</font>Matrícula Alumno:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="matricula" id="matricula" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="btn_search">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Agrega este div en el cuerpo de tu ejs -->
+        <div id="historialModal" class="modal fade" tabindex="-1" aria-labelledby="historialModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="historialModalLabel">Historial Académico del Alumno: <span id="info_alumno"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Aquí se agregarán las tablas dinámicamente -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <%- include('../partials/footer'); %>
+    </div>
+</div>
+
+
+<%- include('../partials/scripts'); %>
+
+<!-- Agrega este script al final del archivo ejs -->
+<script>
+    $(document).ready(function() {
+        $("#btn_search").click(function() {
+            const matricula = $("#matricula").val();
+            $.post('/Calificaciones/Historial/'+matricula, { matricula }, function (resp) {
+                if (resp.status === 404) {
+                    Swal.fire("No se encontró la matrícula especificada");
+                } else {
+                    const alumno = resp.alumno;
+
+                    $('#info_alumno').html(alumno.matricula + ' - ' +alumno.nombre + ' ' + alumno.apellido_paterno + ' ' +  alumno.apellido_materno +' ');
+                    const historial = resp.historial;
+
+                    // Construir el contenido de las tablas del historial académico
+                    let tablesHtml = '';
+                    historial.forEach(function(cuatrimestreData) {
+                        const materiasHtml = cuatrimestreData.materias.map(function(materia) {
+                            return `<tr>
+                                        <td>${materia.clave_materia}</td>
+                                        <td>${materia.nombre_materia}</td>
+                                        <td>${materia.parcial1}</td>
+                                        <td>${materia.parcial2}</td>
+                                        <td>${materia.parcial3}</td>
+                                        <td>${materia.extraordinario}</td>
+                                    </tr>`;
+                        }).join('');
+
+                        tablesHtml += `
+                            <h5>Cuatrimestre ${cuatrimestreData.cuatrimestre}</h5>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Clave Materia</th>
+                                        <th>Nombre Materia</th>
+                                        <th>Parcial1</th>
+                                        <th>Parcial2</th>
+                                        <th>Parcial3</th>
+                                        <th>Extraordinario</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${materiasHtml}
+                                </tbody>
+                            </table>`;
+                    });
+
+                    // Agregar el contenido de las tablas al modal y mostrarlo
+                    const modalBody = $("#historialModal .modal-body");
+                    modalBody.empty().append(tablesHtml);
+
+                    // Mostrar el modal
+                    $("#historialModal").modal("show");
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

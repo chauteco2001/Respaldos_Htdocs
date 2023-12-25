@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+    <title>Gestión de Calificaciones por Estudiantes</title>
+    <%- include('../partials/styles'); %>
+</head>
+<body>
+<%- include('../partials/nav-bar'); %>
+
+
+<div id="layoutSidenav">
+    <%- include('../partials/side-nav'); %>
+
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+
+                <div class="card m-4">
+                    <div class="card-header">
+                        <h3 class="h3">
+                            Consultar Calificacion por cuatrimestre
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row m-3">
+                            <div class="col-md-4">
+                                <label>Seleccionar cuatrimestre</label>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="cuatrimestre" id="cuatrimestre_select" class="form-select">
+                                    <option value="1" <%=  (cuatrimestre == 1) ? 'selected' : ''%>>1</option>
+                                    <option value="2" <%=  (cuatrimestre == 2) ? 'selected' : ''%>>2</option>
+                                    <option value="3" <%=  (cuatrimestre == 3) ? 'selected' : ''%>>3</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-sm btn-outline-secondary" type="button" id="btn_search">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row m-3">
+                            <div class="container">
+                                <h1>Calificaciones Cuatrimestre <%= cuatrimestre %></h1>
+                                <table class="table table-bordered table-striped">
+                                    <thead class="table-dark text-center">
+                                    <tr>
+                                        <th>Matrícula</th>
+                                        <th>Nombre Completo Alumno</th>
+                                        <% for (const materia of info.materias) { %>
+                                            <th><%= materia.nombre %></th>
+                                        <% } %>
+                                        <th>PROMEDIO INDIVIDUAL</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                    <% for (const estudiante of info.estudiantes) { %>
+                                        <tr>
+                                            <td><%= estudiante.matricula %></td>
+                                            <td><%= estudiante.nombre_completo %></td>
+                                            <% for (const materia of info.materias) { %>
+                                                <td><%= info[estudiante.id] && info[estudiante.id][materia.id] !== undefined ? (info[estudiante.id][materia.id] !== null ? info[estudiante.id][materia.id].toFixed(2) : '-') : '-' %></td>
+                                            <% } %>
+                                            <td>
+                                                <% if (info[estudiante.id]) {
+                                                    const promedioIndividual = Object.values(info[estudiante.id]).reduce((acc, val) => acc + (val !== null ? val : 0), 0) / info.materias.length;
+                                                %><%= promedioIndividual.toFixed(2) %><% }
+                                                else { %>-<% } %>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th colspan="2">PROMEDIO GRUPAL</th>
+                                        <% for (const materia of info.materias) { %>
+                                            <th><%= info.promediosMaterias[materia.id] !== null ? info.promediosMaterias[materia.id].toFixed(2) : '-' %></th>
+                                        <% } %>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+        <%- include('../partials/footer'); %>
+    </div>
+</div>
+
+
+<%- include('../partials/scripts'); %>
+
+<!-- Agrega este script al final del archivo ejs -->
+<script>
+    $(document).ready(function() {
+        $('#btn_search').click(function () {
+            const cuatrimestre = $('#cuatrimestre_select').val();
+            window.location.href = '/Calificaciones/Resumen/Estudiantes/' + cuatrimestre;
+        });
+    });
+</script>
+</body>
+</html>

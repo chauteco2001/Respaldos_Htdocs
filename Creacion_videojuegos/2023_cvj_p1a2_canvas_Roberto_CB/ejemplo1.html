@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejemplo de Dibujo en Canvas</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <a href="index.html">Regresar</a>
+    
+    <canvas id="miCanvas" width="400" height="400"></canvas>
+
+    <script>
+        // Obtén el elemento canvas por su ID
+        var canvas = document.getElementById('miCanvas');
+        var ctx = canvas.getContext('2d'); // Obtén el contexto de dibujo en 2D
+
+        // Dibuja un círculo en el canvas
+        ctx.beginPath();
+        ctx.arc(200, 200, 50, 0, 2 * Math.PI);
+        ctx.fillStyle = 'blue'; // Color de relleno
+        ctx.fill();
+        ctx.lineWidth = 2; // Grosor del borde
+        ctx.strokeStyle = 'black'; // Color del borde
+        ctx.stroke();
+    </script>
+</body>
+</html>
